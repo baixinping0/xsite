@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en"xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>写文章</title>
+    <style type="text/css">
+        .toolbar {
+            border: 1px solid #ccc;
+        }
+        .text {
+            border: 1px solid #ccc;
+            height: 400px;
+        }
+    </style>
+</head>
+<body>
+<div id="toolbar" class="toolbar">
+</div>
+<div style="padding: 5px 0; color: #ccc"></div>
+    <input  th:value="${article.uuid}"  id="uuid" type="hidden"/>
+    <input type="hidden" id="hiddenContent" th:value="${article.content}"/>
+    标题：<input th:value="${article.title}" id="title" type="text"/>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    标签：
+    <select id="selectLabel"  name="labelId">
+        <option th:if="${defaultLabel != null}" th:value="${defaultLabel.uuid}" th:text="${defaultLabel.name}">
+
+        </option>
+        <option th:each="o,iterStat:${labelList}"
+                th:text="${o.name}" th:value='${o.uuid}'>
+        </option>
+    </select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <label id="saveStatus">保存</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    创建标签：<input id="label" type="text"/>
+
+    <input id="createLabel" type="button" value="创建">
+<div style="padding: 5px 0; color: #ccc"></div>
+<div id="editor"  class="text"> <!--可使用 min-height 实现编辑区域自动增加高度-->
+
+</div>
+<div style="padding: 5px 0; color: #ccc"></div>
+<input id="save" type="button" value="保存"/>
+
+
+<script th:src="@{/js/jquery-1.8.3.js}"></script>
+<script th:src="@{/js/wangEditor.min.js}"></script>
+<script type="text/javascript">
+//    初始化编辑器
+    var E = window.wangEditor
+    var editor = new E('#toolbar', '#editor')  // 两个参数也可以传入 elem 对象，class 选择器
+    editor.customConfig.uploadImgServer = '/xsite/upload/uploadPicture';
+editor.customConfig.uploadImgHooks = {
+    before: function (xhr, editor, files) {
+        // 图片上传之前触发
+        // xhr 是 XMLHttpRequst 对象，editor 是编辑器对象，files 是选择的图片文件
+
+        // 如果返回的结果是 {prevent: true, msg: 'xxxx'} 则表示用户放弃上传
+        // return {
+        //     prevent: true,
+        //     msg: '放弃上传'
+        // }
+    },
+    success: function (xhr, editor, result) {
+        // 图片上传并返回结果，图片插入成功之后触发
+        // xhr 是 XMLHttpRequst 对象，editor 是编辑器对象，result 是服务器端返回的结果
+    },
+    fail: function (xhr, editor, result) {
+        // 图片上传并返回结果，但图片插入错误时触发
+        // xhr 是 XMLHttpRequst 对象，editor 是编辑器对象，result 是服务器端返回的结果
+    },
+    error: function (xhr, editor) {
+        // 图片上传出错时触发
+        // xhr 是 XMLHttpRequst 对象，editor 是编辑器对象
+    },
+    timeout: function (xhr, editor) {
+        // 图片上传超时时触发
+        // xhr 是 XMLHttpRequst 对象，editor 是编辑器对象
+    },
+
+    // 如果服务器端返回的不是 {errno:0, data: [...]} 这种格式，可使用该配置
+    // （但是，服务器端返回的必须是一个 JSON 格式字符串！！！否则会报错）
+    customInsert: function (insertImg, result, editor) {
+        // 图片上传并返回结果，自定义插入图片的事件（而不是编辑器自动插入图片！！！）
+        // insertImg 是插入图片的函数，editor 是编辑器对象，result 是服务器端返回的结果
+
+        // 举例：假如上传图片成功后，服务器端返回的是 {url:'....'} 这种格式，即可这样插入图片：
+        var url = result.url;
+        insertImg(url)
+//        alert(result);
+
+        // result 必须是一个 JSON 格式字符串！！！否则报错
+    }
+}
+
+editor.create();
+//初始化内容
+var content = $("#hiddenContent").val();
+editor.txt.html(content);
+//    保存文章
+    $(function(){
+        //    此变量防止重复保存
+        var saveSucceed = true;
+//        监听ctrl+s
+        $(document).keydown(function(e){
+            if( e.ctrlKey  == true && e.keyCode == 83 ){
+                saveArticle();
+                return false;//返回false将不会弹出保存网页的对话框
+            }
+        });
+        //监听保存按钮点击事件
+        $("#save").click(function(){
+            saveArticle();
+        });
+        //文章保存
+        function saveArticle() {
+            if(saveSucceed){
+                saveSucceed = false;
+                $("#saveStatus").html("正在保存...");
+                var uuid = $("#uuid").val();
+                var title = $("#title").val();
+                var content = editor.txt.html();
+                var label = $("#selectLabel").val();
+                var option = {
+                    url:"/xsite/article/insert",
+                    type:"post",
+                    async:false,//是否异步
+                    contentType : "application/json;charset=utf-8", //设置请求头信息
+                    data:{
+                        "uuid":uuid,
+                        "title":title,
+                        "content":content,
+                        "label":label
+                    },
+                    success:function(data){
+                        $("#uuid").val(data);
+                        $("#saveStatus").html("保存成功");
+                        $("#saveStatus").html("保存");
+                        saveSucceed = true;
+                    },
+                    error:function(){
+
+                    }
+                };
+                $.ajax(option);
+            }
+        }
+
+
+        var createSucceed = true;
+//        创建标签
+        $("#createLabel").click(function () {
+            if(createSucceed){
+                createSucceed = false;
+                var name = $("#label").val();
+                var option = {
+                    url:"/xsite/label/insert",
+                    type:"post",
+                    async:false,//是否异步
+                    contentType : "application/json;charset=utf-8", //设置请求头信息
+                    data:{
+                        "name":name
+                    },
+                    success:function(data){
+                        var $select = $("#selectLabel");
+                        var $option = $('<option value="'+data+'">'+name+'</option>');
+                        $select.append($option);
+                        alert("创建成功");
+                        createSucceed = true;
+                    },
+                    error:function(){
+
+                    }
+                };
+                $.ajax(option);
+            }
+
+        });
+    });
+
+</script>
+</body>
+</html>

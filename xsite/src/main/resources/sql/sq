@@ -1,0 +1,13 @@
+create database xsite  charset utf8;
+create table article(
+    uuid varchar(32) not null,
+    title varchar(40) not null,
+    content longtext,
+    labelUuid varchar(32) not null,
+    createTime bigint(20) not null,
+    updateTime bigint(20) not null
+);
+create table label(
+    uuid varchar(32) not null,
+    name varchar(40) not null
+);

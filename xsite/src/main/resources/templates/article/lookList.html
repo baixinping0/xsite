@@ -1,0 +1,61 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en"xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>不忘初心</title>
+
+    <link rel="stylesheet"	th:href="@{css/styles.css}" />
+    <script th:src="@{/js/jquery-1.8.3.js}"></script>
+</head>
+<body>
+
+<header>
+
+ <nav id="nav">
+   <ul>
+        <li><a href="javascript:void(0)" >网站首页</a></li>
+        <li><a href="javascript:void(0)">我的文章</a></li>
+        <li><a href="javascript:void(0)" >关于作者</a></li>
+        <li><a href="javascript:void(0)" >联系我们</a></li>
+   </ul>
+ </nav>
+ </header>
+ <div class="mainContent">
+    <aside>
+      <div class="avatar">
+        <a href="#"><span>不忘初心、</span></a>
+      </div>
+      <section class="topspaceinfo">
+        <h1>因为无知、所以追求</h1>
+        <p>&nbsp;&nbsp;&nbsp;对待生命你必须大胆一点、</p>
+          <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              反正你也会失去她....</p>
+      </section>
+
+        <!--文章标题-->
+        <iframe  id="menuContent" src="/xsite/article/lookMenu"
+        style="width:270px;float:right;height:550px" scrolling="no"
+        name="main" frameborder="0"></iframe>
+
+    </aside>
+     <!--文章内容-->
+     <iframe  id="content"  name="blog"   style="width:730px;height:900px" frameborder="0"></iframe>
+
+ </div>
+<footer>
+   <div class="footavatar">
+     <img src="images/photo.jpg" class="footphoto">
+     <ul class="footinfo">
+       <p class="fname"><a href="/dancesmile" >不忘初心、</a>  </p>
+     </ul>
+   </div>
+   <section class="visitor">
+   </section>
+
+ </footer>
+
+
+
+</body>
+</html>

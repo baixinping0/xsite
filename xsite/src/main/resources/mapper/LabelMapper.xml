@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bxp.xsite.dao.LabelDao">
+	<resultMap type="com.bxp.xsite.entity.LabelModel" id="labelRM">
+		<id property="uuid" column="uuid"/>
+	</resultMap>
+	
+	<!-- 查询文章所有的信息 -->
+	<select id="list" parameterType="map" resultMap="labelRM">
+		select * from label
+		where 1=1
+	</select>
+
+
+	<select id="get" parameterType="string" resultMap="labelRM">
+		select * from label
+		where uuid=#{uuid}
+	</select>
+
+
+	<!-- 新增 -->
+	 <insert id="insert" parameterType="com.bxp.xsite.entity.LabelModel">
+		insert into label
+		(uuid,name)
+		values
+		(
+			#{uuid,jdbcType=VARCHAR},
+			#{name,jdbcType=VARCHAR}
+
+		)
+	</insert>
+	
+	<delete id="deleteById" parameterType="String">
+		delete from label
+		where uuid=#{uuid}
+	</delete>
+	
+	
+	<update id="update" parameterType="com.bxp.xsite.entity.LabelModel">
+		update label
+	    <set >
+	      <if test="name != null" >
+	        name = #{name,jdbcType=VARCHAR}
+	      </if>
+
+	    </set>
+    	where uuid = #{uuid,jdbcType=VARCHAR}
+	</update>
+</mapper>
+
+
+
+
+
+
+
+
+
